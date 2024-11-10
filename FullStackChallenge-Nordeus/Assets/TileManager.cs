@@ -9,17 +9,73 @@ public class TileManager : MonoBehaviour
     public int gridHeight = 30;
     public GameObject tilePrefab;
     public float tileSize = 1.0f;
-    public float waterPercentage;
-    public float scale = 10f;  // Kontrola za šum
+    public float waterPercentage = 0.6f;
+    public float lowLandsBound = 0.75f;
+    public float hillsBound = 0.85f;
+    public float mountainsBound = 0.95f;
+    public float scale = 10f;
+
+    public CustomTile[,] tiles;    // matrica tiles
+
+    private float xOffset;
+    private float yOffset;
 
 
-    void Start()
+    void Awake()
     {
+        xOffset = UnityEngine.Random.Range(0f, 100f);
+        yOffset = UnityEngine.Random.Range(0f, 100f);
+
         GenerateTiles();
+    }
+
+    Color GetTileColor(float height)
+    {
+        if (height == 0) // Voda
+        {
+            return new Color(0.0f, 0.2f, 0.5f);
+        }
+        else if (height <= lowLandsBound) // Nizije
+        {
+            return new Color(0.0f, 0.5f, 0.0f);
+        }
+        else if (height <= hillsBound) // Brda
+        {
+            return new Color(0.6f, 0.8f, 0.2f);
+        }
+        else if (height <= mountainsBound) // Planine
+        {
+            return new Color(0.7f, 0.7f, 0.7f);
+        }
+        else // vrhovi planina sa snegom
+        {
+            return new Color(1.0f, 1.0f, 1.0f);
+        }
+    }
+
+    void ispisiTiles()
+    {
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                CustomTile tile = tiles[x, y];
+                if (tile != null)
+                {
+                    Debug.Log($"Tile at ({x}, {y}) - Height: {tile.height}");
+                }
+                else
+                {
+                    Debug.Log($"Tile at ({x}, {y}) is null.");
+                }
+            }
+        }
     }
 
     void GenerateTiles()
     {
+        tiles = new CustomTile[gridWidth, gridHeight];
+
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)
@@ -27,43 +83,29 @@ public class TileManager : MonoBehaviour
                 Vector3 tilePosition = new Vector3(x * tileSize, y * tileSize, 0);
 
                 GameObject newTile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
-                newTile.transform.parent = this.transform; 
+                newTile.transform.parent = this.transform;
 
-                // Koristi Perlinov šum za generisanje visine
-                float xCoord = (float)x / gridWidth * scale;
-                float yCoord = (float)y / gridHeight * scale;
+                // perlinov šum za generisanje visine
+                float xCoord = (float)x / gridWidth * scale + xOffset;
+                float yCoord = (float)y / gridHeight * scale + yOffset;
                 float heightValue = Mathf.PerlinNoise(xCoord, yCoord);
-
-                //float value = UnityEngine.Random.Range(0f, 1f);
+               // Debug.Log(heightValue);
 
                 CustomTile tile = newTile.AddComponent<CustomTile>();
-                
+
                 if (heightValue <= waterPercentage)
                     tile.height = 0;
                 else
-                {
-                    tile.height = heightValue / waterPercentage;
-                }
-                    
-                
+                    tile.height = heightValue;
+                tile.pos = new Vector2(x, y);
+
                 var spriteRenderer = newTile.GetComponent<SpriteRenderer>();
-                if (tile.height == 0)
-                    spriteRenderer.color = new Color(0f, 0f, 0.5f); // vodaaa
-                else
-                {
-                    Color lowGreen = new Color(0f, 0.5f, 0f); // niže visine
-                    Color highColor = new Color(0.7f, 0.7f, 0.7f); // više visine
+                spriteRenderer.color = GetTileColor(tile.height);
 
-                    float minHeight = 1;
-                    float maxHeight = 1 / waterPercentage;
-
-                    Debug.Log(tile.height);
-                    float normalizedHeight = Mathf.InverseLerp(minHeight, maxHeight, tile.height);
-                    Debug.Log(normalizedHeight);
-                    spriteRenderer.color = Color.Lerp(lowGreen, highColor, normalizedHeight);
-                }
-                    
+                tiles[x, y] = tile;
             }
         }
+        //ispisiTiles();    OK ispis tiles -> poklapa se sa mapom
     }
+
 }
