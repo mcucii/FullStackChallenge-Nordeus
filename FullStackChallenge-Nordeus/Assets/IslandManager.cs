@@ -7,8 +7,6 @@ using UnityEngine.UIElements;
 
 public class IslandManager : MonoBehaviour
 {
-    public int gridWidth = 30;
-    public int gridHeight = 30;
     public float maxHeight;
     public Dictionary<CustomTile, CustomIsland> tile2island;
     public List<CustomIsland> islands;
@@ -24,10 +22,11 @@ public class IslandManager : MonoBehaviour
         DetectIslands();
         CalculateHeights();
     }
+    
 
     void Dfs(CustomTile[,] tiles, bool[,] visited, int i, int j, CustomIsland currIsland)
     {
-        if (i < 0 || j < 0 || i >= gridWidth || j >= gridHeight) return;
+        if (i < 0 || j < 0 || i >= tileManager.gridWidth || j >= tileManager.gridHeight) return;
 
         if (visited[i,j]) return;  
         visited[i, j] = true;
@@ -46,10 +45,10 @@ public class IslandManager : MonoBehaviour
     void DetectIslands()
     {
         // pronalazi sva ostrva i cuva ih u nizu islands, i takodje cuva u tile2island (vidi je l potrebno)
-        visited = new bool[gridWidth , gridHeight];
-        for (int i = 0; i < gridWidth; i++)
+        visited = new bool[tileManager.gridWidth , tileManager.gridHeight];
+        for (int i = 0; i < tileManager.gridWidth; i++)
         {
-            for (int j = 0; j < gridHeight; j++)
+            for (int j = 0; j < tileManager.gridHeight; j++)
             {
                 // ako je polje kopno i nije poseceno --> novo ostrvo
                 if (!visited[i, j] && tileManager.tiles[i, j].height > 0)
