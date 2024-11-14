@@ -2,17 +2,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameLogicManager : MonoBehaviour {
-    public int lives = 3;
 
     public TileManager tileManager;
     public IslandManager islandManager;
+    public HealthSystem healthSystem;
 
     public GameOverScreen gameOverScreen;
     public WinScreen winScreen;
 
     void Update()
     {
-        if(lives == 0) {
+        if(healthSystem.IsDead()) {
             GameOver();
         }
 
@@ -32,7 +32,6 @@ public class GameLogicManager : MonoBehaviour {
 
     void CheckResult(CustomTile clickedTile)
     {
-        Debug.Log($"LIVES: {lives}");
         if (islandManager.tile2island.TryGetValue(clickedTile, out CustomIsland clickedIsland))
         {
             if (clickedIsland.avgHeight == islandManager.maxHeight)
@@ -43,13 +42,13 @@ public class GameLogicManager : MonoBehaviour {
             else
             {
                 Debug.Log("Nije najvece ostrvo. TRY AGAIN.");
-                lives--;
+                healthSystem.TakeDamage();
             }
         }
         else
         {
             Debug.Log("Ovo polje nije deo ostrva.");
-            lives--;
+            healthSystem.TakeDamage();
         }
     }
 

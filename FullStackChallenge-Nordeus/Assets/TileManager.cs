@@ -9,10 +9,13 @@ public class TileManager : MonoBehaviour
     public int gridHeight = 30;
     public GameObject tilePrefab;
     public float tileSize = 1.0f;
+
     public float waterPercentage = 0.6f;
-    public float lowLandsBound = 0.75f;
-    public float hillsBound = 0.85f;
-    public float mountainsBound = 0.95f;
+    public float lowLandsBound = 0.3f;    
+    public float highLandsBound = 0.5f;
+    public float hillsBound = 0.7f;
+    public float mountainsBound = 0.9f;
+
     public float scale = 10f;
 
     public CustomTile[,] tiles;    // matrica tiles
@@ -37,40 +40,26 @@ public class TileManager : MonoBehaviour
         }
         else if (height <= lowLandsBound) // Nizije
         {
-            return new Color(0.0f, 0.5f, 0.0f);
+            return new Color(0.3f, 0.5f, 0.2f); 
+        }
+        else if (height <= highLandsBound) // Brezuljci
+        {
+            return new Color(0.4f, 0.6f, 0.3f); 
         }
         else if (height <= hillsBound) // Brda
         {
-            return new Color(0.6f, 0.8f, 0.2f);
+            return new Color(0.7f, 0.7f, 0.5f); 
         }
         else if (height <= mountainsBound) // Planine
         {
-            return new Color(0.7f, 0.7f, 0.7f);
+            return new Color(0.6f, 0.6f, 0.6f);
         }
-        else // vrhovi planina sa snegom
+        else // Vrhovi - sneg
         {
-            return new Color(1.0f, 1.0f, 1.0f);
+            return new Color(1.0f, 1.0f, 1.0f); 
         }
     }
 
-    void ispisiTiles()
-    {
-        for (int x = 0; x < gridWidth; x++)
-        {
-            for (int y = 0; y < gridHeight; y++)
-            {
-                CustomTile tile = tiles[x, y];
-                if (tile != null)
-                {
-                    Debug.Log($"Tile at ({x}, {y}) - Height: {tile.height}");
-                }
-                else
-                {
-                    Debug.Log($"Tile at ({x}, {y}) is null.");
-                }
-            }
-        }
-    }
 
     void GenerateTiles()
     {
@@ -89,14 +78,19 @@ public class TileManager : MonoBehaviour
                 float xCoord = (float)x / gridWidth * scale + xOffset;
                 float yCoord = (float)y / gridHeight * scale + yOffset;
                 float heightValue = Mathf.PerlinNoise(xCoord, yCoord);
-               // Debug.Log(heightValue);
+                // Debug.Log(heightValue);
 
                 CustomTile tile = newTile.AddComponent<CustomTile>();
 
                 if (heightValue <= waterPercentage)
                     tile.height = 0;
                 else
-                    tile.height = heightValue;
+                {
+                    // Normalizovanje vrednosti kopna između 0 i 1
+                    float landHeight = (heightValue - waterPercentage) / (1 - waterPercentage);
+                    tile.height = landHeight;
+                }
+
                 tile.pos = new Vector2(x, y);
 
                 var spriteRenderer = newTile.GetComponent<SpriteRenderer>();
@@ -108,4 +102,23 @@ public class TileManager : MonoBehaviour
         //ispisiTiles();    OK ispis tiles -> poklapa se sa mapom
     }
 
+
+    /*void ispisiTiles()
+    {
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                CustomTile tile = tiles[x, y];
+                if (tile != null)
+                {
+                    Debug.Log($"Tile at ({x}, {y}) - Height: {tile.height}");
+                }
+                else
+                {
+                    Debug.Log($"Tile at ({x}, {y}) is null.");
+                }
+            }
+        }
+    }*/
 }
