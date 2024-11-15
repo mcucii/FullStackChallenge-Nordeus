@@ -74,11 +74,10 @@ public class TileManager : MonoBehaviour
                 GameObject newTile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
                 newTile.transform.parent = this.transform;
 
-                // perlinov šum za generisanje visine
+                // perlinov sum za generisanje visine
                 float xCoord = (float)x / gridWidth * scale + xOffset;
                 float yCoord = (float)y / gridHeight * scale + yOffset;
                 float heightValue = Mathf.PerlinNoise(xCoord, yCoord);
-                // Debug.Log(heightValue);
 
                 CustomTile tile = newTile.AddComponent<CustomTile>();
 
@@ -86,7 +85,7 @@ public class TileManager : MonoBehaviour
                     tile.height = 0;
                 else
                 {
-                    // Normalizovanje vrednosti kopna između 0 i 1
+                    // normalizovanje vrednosti kopna izmedju 0 i 1
                     float landHeight = (heightValue - waterPercentage) / (1 - waterPercentage);
                     tile.height = landHeight;
                 }
@@ -95,6 +94,11 @@ public class TileManager : MonoBehaviour
 
                 var spriteRenderer = newTile.GetComponent<SpriteRenderer>();
                 spriteRenderer.color = GetTileColor(tile.height);
+                if (spriteRenderer != null)
+                {
+                    Vector2 spriteSize = spriteRenderer.bounds.size;
+                    Debug.Log($"Tile sprite size in world units: {spriteSize.x} x {spriteSize.y}");
+                }
 
                 tiles[x, y] = tile;
             }

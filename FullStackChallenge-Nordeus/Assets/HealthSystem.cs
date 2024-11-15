@@ -17,7 +17,6 @@ public class HealthSystem : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log($"{hearts.Length}");
 
         for(int i = 0; i < hearts.Length; i++)
         {

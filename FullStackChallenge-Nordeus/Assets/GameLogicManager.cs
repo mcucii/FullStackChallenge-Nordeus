@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class GameLogicManager : MonoBehaviour {
@@ -10,6 +10,7 @@ public class GameLogicManager : MonoBehaviour {
     public GameOverScreen gameOverScreen;
     public WinScreen winScreen;
 
+
     void Update()
     {
         if(healthSystem.IsDead()) {
@@ -18,14 +19,24 @@ public class GameLogicManager : MonoBehaviour {
 
         if (Input.GetMouseButtonDown(0))
         {
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mousePosition = Input.mousePosition;
+            mousePosition.z = Mathf.Abs(Camera.main.transform.position.z); // Dubina ravni pločica
+
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+            worldPosition -= tileManager.transform.position; // Ukloni offset mreže
+
             int x = Mathf.FloorToInt(worldPosition.x / tileManager.tileSize);
             int y = Mathf.FloorToInt(worldPosition.y / tileManager.tileSize);
 
             if (x >= 0 && x < tileManager.gridWidth && y >= 0 && y < tileManager.gridHeight)
             {
+                Debug.Log($"CLICK ON TILE {x}, {y}.");
                 CustomTile clickedTile = tileManager.tiles[x, y];
-                CheckResult(clickedTile); 
+                CheckResult(clickedTile);
+            }
+            else
+            {
+                Debug.Log("Click out of bounds.");
             }
         }
     }
