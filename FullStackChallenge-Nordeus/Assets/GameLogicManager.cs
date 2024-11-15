@@ -1,6 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameState
+{
+    Playing,
+    Win,
+    Lose
+}
+
 public class GameLogicManager : MonoBehaviour {
 
     public TileManager tileManager;
@@ -10,35 +17,42 @@ public class GameLogicManager : MonoBehaviour {
     public GameOverScreen gameOverScreen;
     public WinScreen winScreen;
 
+    public GameState currentState = GameState.Playing;
+
 
     void Update()
     {
-        if(healthSystem.IsDead()) {
-            GameOver();
-        }
-
-        if (Input.GetMouseButtonDown(0))
+        if (currentState == GameState.Playing)
         {
-            Vector3 mousePosition = Input.mousePosition;
-            mousePosition.z = Mathf.Abs(Camera.main.transform.position.z); // Dubina ravni pločica
-
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-            worldPosition -= tileManager.transform.position; // Ukloni offset mreže
-
-            int x = Mathf.FloorToInt(worldPosition.x / tileManager.tileSize);
-            int y = Mathf.FloorToInt(worldPosition.y / tileManager.tileSize);
-
-            if (x >= 0 && x < tileManager.gridWidth && y >= 0 && y < tileManager.gridHeight)
+            if (healthSystem.IsDead())
             {
-                Debug.Log($"CLICK ON TILE {x}, {y}.");
-                CustomTile clickedTile = tileManager.tiles[x, y];
-                CheckResult(clickedTile);
+                GameOver();
             }
-            else
+
+            if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log("Click out of bounds.");
+                Vector3 mousePosition = Input.mousePosition;
+                mousePosition.z = Mathf.Abs(Camera.main.transform.position.z); // Dubina ravni pločica
+
+                Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+                worldPosition -= tileManager.transform.position; // Ukloni offset mreže
+
+                int x = Mathf.FloorToInt(worldPosition.x / tileManager.tileSize);
+                int y = Mathf.FloorToInt(worldPosition.y / tileManager.tileSize);
+
+                if (x >= 0 && x < tileManager.gridWidth && y >= 0 && y < tileManager.gridHeight)
+                {
+                    //Debug.Log($"CLICK ON TILE {x}, {y}.");
+                    CustomTile clickedTile = tileManager.tiles[x, y];
+                    CheckResult(clickedTile);
+                }
+                else
+                {
+                    Debug.Log("Click out of bounds.");
+                }
             }
         }
+            
     }
 
     void CheckResult(CustomTile clickedTile)
@@ -65,11 +79,13 @@ public class GameLogicManager : MonoBehaviour {
 
     void GameOver()
     {
+        currentState = GameState.Lose;
         gameOverScreen.setUp();
     }
 
     void Win()
     {
+        currentState = GameState.Win;
         winScreen.setUp();
     }
 }

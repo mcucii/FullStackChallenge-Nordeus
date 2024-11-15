@@ -34,25 +34,35 @@ public class TileManager : MonoBehaviour
 
     Color GetTileColor(float height)
     {
+        Color color1 = new Color(0.3f, 0.5f, 0.2f); // nizije
+        Color color2 = new Color(0.4f, 0.6f, 0.3f); // brezuljci
+        Color color3 = new Color(0.7f, 0.7f, 0.5f); // brda
+        Color color4 = new Color(0.6f, 0.6f, 0.6f); // planine
+        Color color5 = new Color(1.0f, 1.0f, 1.0f); // vrhovi
+
         if (height == 0) // Voda
         {
             return new Color(0.0f, 0.2f, 0.5f);
         }
         else if (height <= lowLandsBound) // Nizije
         {
-            return new Color(0.3f, 0.5f, 0.2f); 
+            float t = (height - 0) / (lowLandsBound - 0);
+            return Color.Lerp(color1, color2, t);
         }
         else if (height <= highLandsBound) // Brezuljci
         {
-            return new Color(0.4f, 0.6f, 0.3f); 
+            float t = (height - lowLandsBound) / (highLandsBound - lowLandsBound);
+            return Color.Lerp(color2, color3, t);
         }
         else if (height <= hillsBound) // Brda
         {
-            return new Color(0.7f, 0.7f, 0.5f); 
+            float t = (height - highLandsBound) / (hillsBound - highLandsBound);
+            return Color.Lerp(color3, color4, t);
         }
         else if (height <= mountainsBound) // Planine
         {
-            return new Color(0.6f, 0.6f, 0.6f);
+            float t = (height - hillsBound) / (mountainsBound - hillsBound);
+            return Color.Lerp(color4, color5, t);
         }
         else // Vrhovi - sneg
         {
