@@ -34,15 +34,16 @@ public class TileManager : MonoBehaviour
   
     Color GetTileColor(float height)
     {
+        Color color0 = new Color(0.0f, 0.2f, 0.5f);          // voda
         Color color1 = new Color(0.8235f, 0.7059f, 0.5490f); // pesak
         Color color2 = new Color(0.4706f, 0.7059f, 0.3922f); // nizije
         Color color3 = new Color(0.5451f, 0.4667f, 0.3098f); // brda
         Color color4 = new Color(0.6627f, 0.6627f, 0.6627f); // planine
-        Color color5 = new Color(1.0f, 1.0f, 1.0f); // vrhovi
+        Color color5 = new Color(1.0f, 1.0f, 1.0f);          // vrhovi
 
         if (height == 0) // Voda
         {
-            return new Color(0.0f, 0.2f, 0.5f);
+            return color0;
         }
         else if (height <= sandBound*maxHeight) // Nizije
         {
@@ -97,8 +98,6 @@ public class TileManager : MonoBehaviour
                     tile.height = landHeight * maxHeight;   // visina kopna 0-1000
                 }
 
-                tile.pos = new Vector2(x, y);
-
                 var spriteRenderer = newTile.GetComponent<SpriteRenderer>();
                 spriteRenderer.color = GetTileColor(tile.height);
                 if (spriteRenderer != null)
@@ -133,8 +132,6 @@ public class TileManager : MonoBehaviour
 
                 CustomTile tile = newTile.AddComponent<CustomTile>();
                 tile.height = heights[x, y]; // Visina se postavlja iz matrice
-
-                tile.pos = new Vector2(x, y);
 
                 var spriteRenderer = newTile.GetComponent<SpriteRenderer>();
                 if (spriteRenderer != null)

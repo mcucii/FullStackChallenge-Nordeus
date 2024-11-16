@@ -9,7 +9,7 @@ public class InputManager : MonoBehaviour
     public TileManager tileManager;
     public IslandManager islandManager;
 
-    public TextMeshProUGUI msgHowToPlay;
+    public GameObject gameElements;
 
     public int[,] heights;
 
@@ -34,11 +34,18 @@ public class InputManager : MonoBehaviour
                 {
                     if (int.TryParse(values[index], out int value))
                     {
-                        heights[x, y] = value; // Direktno smesti int vrednost
+                        if (value < 0 || value > 1000)
+                        {
+                            Debug.LogError($"Neispravna vrednost na poziciji {index}: {value}. Vrednost mora biti izmedju 0 i 1000. Generise se random mapa.");
+                            tileManager.GenerateRandomMap();
+                            return;
+                        }
+                        heights[x, y] = value;
                     }
                     else
                     {
                         Debug.LogError($"Neispravna vrednost na poziciji {index}: {values[index]}");
+                        tileManager.GenerateRandomMap();
                         return;
                     }
                     index++;
@@ -48,7 +55,7 @@ public class InputManager : MonoBehaviour
             tileManager.GenerateCustomMap(heights);
         }
 
-        msgHowToPlay.gameObject.SetActive(true);
+        gameElements.SetActive(true);
 
         islandManager.DetectIslands();
         islandManager.CalculateHeights();
