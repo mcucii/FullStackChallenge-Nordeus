@@ -19,8 +19,11 @@ public class IslandManager : MonoBehaviour
     {
         tile2island = new Dictionary<CustomTile, CustomIsland>();
 
-        DetectIslands();
-        CalculateHeights();
+/*        if(tileManager.tiles != null)
+        {
+            DetectIslands();
+            CalculateHeights();
+        }*/
     }
     
 
@@ -42,7 +45,7 @@ public class IslandManager : MonoBehaviour
         Dfs(tiles, visited, i, j - 1, currIsland);
     }
 
-    void DetectIslands()
+    public void DetectIslands()
     {
         // pronalazi sva ostrva i cuva ih u nizu islands, i takodje cuva u tile2island (vidi je l potrebno)
         visited = new bool[tileManager.gridWidth , tileManager.gridHeight];
@@ -64,7 +67,7 @@ public class IslandManager : MonoBehaviour
         Debug.Log($"num islands: {islands.Count}");
     }
 
-    void CalculateHeights()
+    public void CalculateHeights()
     {
         maxHeight = 0;
         foreach(CustomIsland isl in islands)

@@ -19,13 +19,7 @@ public class HealthSystem : MonoBehaviour
     {
 
         for(int i = 0; i < hearts.Length; i++)
-        {
-            // i  0 1 2
-            //    s s s
-
-            // ch   1 2 3
-            // i = ch - 1
-            
+        {   
             if(i < currentHealth)
             {
                 hearts[i].sprite = fullHeart;
