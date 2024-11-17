@@ -27,13 +27,6 @@ public class MapManager : MonoBehaviour
     private float hillsBound = 0.6f;
     private float mountainsBound = 0.8f;
 
-
-    void Awake()
-    {
-        xOffset = UnityEngine.Random.Range(0f, 100f);
-        yOffset = UnityEngine.Random.Range(0f, 100f);
-    }
-
   
     Color GetTileColor(float height)
     {
@@ -75,13 +68,15 @@ public class MapManager : MonoBehaviour
 
     public void GenerateRandomMap()
     {
+        xOffset = UnityEngine.Random.Range(0f, 100f);
+        yOffset = UnityEngine.Random.Range(0f, 100f);
+
         tiles = new CustomTile[gridWidth, gridHeight];
 
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)
             {
-                //Vector3 tilePosition = new Vector3(x * tileSize , y * tileSize, 0);    
                 Vector3 tilePosition = new Vector3(x * tileSize + transform.position.x, y * tileSize + transform.position.y, 0);
 
                 GameObject newTile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);

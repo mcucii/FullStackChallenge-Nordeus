@@ -21,7 +21,7 @@ public class InputManager : MonoBehaviour
 
         if (values.Length != mapManager.gridWidth * mapManager.gridHeight)
         {
-            Debug.LogError($"Nepotpun unos. Generise se random mapa.");
+            Debug.LogError($"Nepotpun unos. Generise se random mapa. {values.Length} ");
             mapManager.GenerateRandomMap();
         } else
         {
