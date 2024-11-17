@@ -4,14 +4,17 @@ using UnityEngine.UI;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 
-public class TileManager : MonoBehaviour
+public class MapManager : MonoBehaviour
 {
     public int gridWidth = 30;
     public int gridHeight = 30;
+
     public GameObject tilePrefab;
     public float tileSize = 1.0f;
+
     public int maxHeight = 1000;
     public float scale = 10f;
+
     public int[,] heights;
     public CustomTile[,] tiles;
 
@@ -69,6 +72,7 @@ public class TileManager : MonoBehaviour
     }
 
 
+
     public void GenerateRandomMap()
     {
         tiles = new CustomTile[gridWidth, gridHeight];
@@ -77,7 +81,8 @@ public class TileManager : MonoBehaviour
         {
             for (int y = 0; y < gridHeight; y++)
             {
-                Vector3 tilePosition = new Vector3(x * tileSize, y * tileSize, 0);
+                //Vector3 tilePosition = new Vector3(x * tileSize , y * tileSize, 0);    
+                Vector3 tilePosition = new Vector3(x * tileSize + transform.position.x, y * tileSize + transform.position.y, 0);
 
                 GameObject newTile = Instantiate(tilePrefab, tilePosition, Quaternion.identity);
                 newTile.transform.parent = this.transform;
@@ -100,10 +105,6 @@ public class TileManager : MonoBehaviour
 
                 var spriteRenderer = newTile.GetComponent<SpriteRenderer>();
                 spriteRenderer.color = GetTileColor(tile.height);
-                if (spriteRenderer != null)
-                {
-                    Vector2 spriteSize = spriteRenderer.bounds.size;
-                }
 
                 tiles[x, y] = tile;
             }

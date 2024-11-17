@@ -11,7 +11,7 @@ public enum GameState
 
 public class GameLogicManager : MonoBehaviour {
 
-    public TileManager tileManager;
+    public MapManager mapManager;
     public IslandManager islandManager;
     public HealthSystem healthSystem;
 
@@ -23,8 +23,7 @@ public class GameLogicManager : MonoBehaviour {
 
     void Update()
     {
-/*        Debug.Log($"CURR game state: {currentState}");
-*/        if (tileManager.tiles != null && currentState == GameState.Init)
+        if (mapManager.tiles != null && currentState == GameState.Init)
         {
             currentState = GameState.Playing;
         }
@@ -45,15 +44,17 @@ public class GameLogicManager : MonoBehaviour {
             mousePosition.z = Mathf.Abs(Camera.main.transform.position.z);
 
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-            worldPosition -= tileManager.transform.position;
 
-            int x = Mathf.FloorToInt(worldPosition.x / tileManager.tileSize);
-            int y = Mathf.FloorToInt(worldPosition.y / tileManager.tileSize);
+            worldPosition += new Vector3(mapManager.tileSize / 2, mapManager.tileSize / 2, 0);
+            worldPosition -= mapManager.transform.position;     // u slucaju da menjamo poziciju mape
 
-            if (x >= 0 && x < tileManager.gridWidth && y >= 0 && y < tileManager.gridHeight)
+            int x = Mathf.FloorToInt(worldPosition.x / mapManager.tileSize);
+            int y = Mathf.FloorToInt(worldPosition.y / mapManager.tileSize);
+
+            if (x >= 0 && x < mapManager.gridWidth && y >= 0 && y < mapManager.gridHeight)
             {
                 //Debug.Log($"CLICK ON TILE {x}, {y}.");
-                CustomTile clickedTile = tileManager.tiles[x, y];
+                CustomTile clickedTile = mapManager.tiles[x, y];
                 CheckResult(clickedTile);
             }
             else
@@ -74,7 +75,7 @@ public class GameLogicManager : MonoBehaviour {
             }
             else
             {
-                Debug.Log("Nije najvece ostrvo. TRY AGAIN.");
+                Debug.Log("Nije najvise ostrvo. TRY AGAIN.");
                 healthSystem.TakeDamage();
             }
         }

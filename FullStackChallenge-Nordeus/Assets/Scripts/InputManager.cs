@@ -6,7 +6,7 @@ using TMPro;
 public class InputManager : MonoBehaviour
 {
     public InputField inputField; 
-    public TileManager tileManager;
+    public MapManager mapManager;
     public IslandManager islandManager;
 
     public GameObject gameElements;
@@ -19,25 +19,25 @@ public class InputManager : MonoBehaviour
 
         string[] values = inputText.Split(new char[] { ' ', ',', '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
 
-        if (values.Length != tileManager.gridWidth * tileManager.gridHeight)
+        if (values.Length != mapManager.gridWidth * mapManager.gridHeight)
         {
             Debug.LogError($"Nepotpun unos. Generise se random mapa.");
-            tileManager.GenerateRandomMap();
+            mapManager.GenerateRandomMap();
         } else
         {
-            heights = new int[tileManager.gridWidth, tileManager.gridHeight];
+            heights = new int[mapManager.gridWidth, mapManager.gridHeight];
             int index = 0;
 
-            for (int x = 0; x < tileManager.gridWidth; x++)
+            for (int x = 0; x < mapManager.gridWidth; x++)
             {
-                for (int y = 0; y < tileManager.gridHeight; y++)
+                for (int y = 0; y < mapManager.gridHeight; y++)
                 {
                     if (int.TryParse(values[index], out int value))
                     {
                         if (value < 0 || value > 1000)
                         {
                             Debug.LogError($"Neispravna vrednost na poziciji {index}: {value}. Vrednost mora biti izmedju 0 i 1000. Generise se random mapa.");
-                            tileManager.GenerateRandomMap();
+                            mapManager.GenerateRandomMap();
                             return;
                         }
                         heights[x, y] = value;
@@ -45,14 +45,14 @@ public class InputManager : MonoBehaviour
                     else
                     {
                         Debug.LogError($"Neispravna vrednost na poziciji {index}: {values[index]}");
-                        tileManager.GenerateRandomMap();
+                        mapManager.GenerateRandomMap();
                         return;
                     }
                     index++;
                 }
             }
 
-            tileManager.GenerateCustomMap(heights);
+            mapManager.GenerateCustomMap(heights);
         }
 
         gameElements.SetActive(true);

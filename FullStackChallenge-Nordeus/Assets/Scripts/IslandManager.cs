@@ -11,7 +11,7 @@ public class IslandManager : MonoBehaviour
     public Dictionary<CustomTile, CustomIsland> tile2island;
     public List<CustomIsland> islands;
 
-    public TileManager tileManager;
+    public MapManager mapManager;
 
     private bool[,] visited;
 
@@ -23,12 +23,12 @@ public class IslandManager : MonoBehaviour
 
     void Dfs(CustomTile[,] tiles, bool[,] visited, int i, int j, CustomIsland currIsland)
     {
-        if (i < 0 || j < 0 || i >= tileManager.gridWidth || j >= tileManager.gridHeight) return;
+        if (i < 0 || j < 0 || i >= mapManager.gridWidth || j >= mapManager.gridHeight) return;
 
         if (visited[i,j]) return;  
         visited[i, j] = true;
 
-        if (tileManager.tiles[i, j].height == 0) return;  // voda ne pripada ostrvu
+        if (mapManager.tiles[i, j].height == 0) return;  // voda ne pripada ostrvu
 
         currIsland.tiles.Add(tiles[i, j]);
         tile2island.Add(tiles[i, j], currIsland);
@@ -42,18 +42,18 @@ public class IslandManager : MonoBehaviour
     public void DetectIslands()
     {
         // pronalazi sva ostrva i cuva ih u nizu islands, i takodje cuva u tile2island
-        visited = new bool[tileManager.gridWidth , tileManager.gridHeight];
-        for (int i = 0; i < tileManager.gridWidth; i++)
+        visited = new bool[mapManager.gridWidth , mapManager.gridHeight];
+        for (int i = 0; i < mapManager.gridWidth; i++)
         {
-            for (int j = 0; j < tileManager.gridHeight; j++)
+            for (int j = 0; j < mapManager.gridHeight; j++)
             {
                 // ako je polje kopno i nije poseceno --> novo ostrvo
-                if (!visited[i, j] && tileManager.tiles[i, j].height > 0)
+                if (!visited[i, j] && mapManager.tiles[i, j].height > 0)
                 {
                     CustomIsland newIsland = gameObject.AddComponent<CustomIsland>();
                     islands.Add(newIsland);
 
-                    Dfs(tileManager.tiles, visited, i, j, newIsland);
+                    Dfs(mapManager.tiles, visited, i, j, newIsland);
                 }
             }
         }
